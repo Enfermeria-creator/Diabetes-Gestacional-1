@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>App Diabetes Gestacional</title>
+    <style>
+        /* ESTILOS MOBILE-FIRST */
+        :root {
+            --morado-principal: #7e57c2;
+            --morado-claro: #b39ddb;
+            --fondo: #faf5ff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: var(--fondo);
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 70px; /* Espacio para menú inferior */
+        }
+        
+        /* HEADER */
+        .header {
+            background-color: var(--morado-principal);
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* CONTENIDO */
+        .container {
+            padding: 15px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        section {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: var(--morado-principal);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        /* FORMULARIOS MOBILE */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: var(--morado-principal);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background-color: #5e35b1;
+        }
+        
+        /* TABLAS RESPONSIVAS */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 600px;
+        }
+        
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: var(--morado-claro);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* MENÚ INFERIOR */
+        .mobile-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .menu-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--morado-principal);
+            text-decoration: none;
+            padding: 5px;
+        }
+        
+        .menu-btn i {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+        }
+        
+        /* VIDEOS */
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .video-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .video-card iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+        }
+        
+        .video-info {
+            padding: 12px;
+            background: white;
+        }
+        
+        /* CONTACTO */
+        .contact-card {
+            background-color: #edf2ff;
+            border-left: 4px solid var(--morado-principal);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .contact-item {
+            margin-bottom: 12px;
+        }
+        
+        .contact-item h4 {
+            color: var(--morado-principal);
+            margin-bottom: 5px;
+        }
+        
+        /* PESTAÑAS */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* MEDIA QUERIES PARA TABLETS */
+        @media (min-width: 768px) {
+            .container {
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            
+            .video-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ENCABEZADO -->
+    <header class="header">
+        <h1>Diabetes Gestacional</h1>
+    </header>
+    
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container">
+        <!-- CRONOGRAMA -->
+        <section id="cronograma" class="tab-content active">
+            <h2>📅 Cronograma de Controles</h2>
+            <form id="form-calendario">
+                <div class="form-group">
+                    <label for="evento-titulo">Tipo de control:</label>
+                    <select id="evento-titulo" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Control prenatal">Control prenatal</option>
+                        <option value="Examen de laboratorio">Examen de laboratorio</option>
+                        <option value="Ecografía">Ecografía</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="evento-fecha">Fecha:</label>
+                    <input type="date" id="evento-fecha" required>
+                </div>
+                
+                <button type="submit">Agregar al Cronograma</button>
+            </form>
+            
+            <div class="table-container">
+                <table id="tabla-eventos">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Control</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los eventos se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- GLUCOMETRÍA -->
+        <section id="glucometria" class="tab-content">
+            <h2>🩸 Registro de Glucometría</h2>
+            <form id="form-glucometria">
+                <div class="form-group">
+                    <label for="glucosa-valor">Valor (mg/dL):</label>
+                    <input type="number" id="glucosa-valor" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="glucosa-momento">Momento:</label>
+                    <select id="glucosa-momento" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Ayunas">En ayunas</option>
+                        <option value="Post-desayuno">1h post-desayuno</option>
+                        <option value="Post-almuerzo">1h post-almuerzo</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Registrar Medición</button>
+            </form>
+            
+            <div class="table-container">
+                <table id="tabla-glucometria">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Valor</th>
+                            <th>Momento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los registros se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- CLAP -->
+        <section id="clap" class="tab-content">
+            <h2>📋 Registro CLAP</h2>
+            <form id="form-clap">
+                <div class="form-group">
+                    <label for="clap-peso">Peso (kg):</label>
+                    <input type="number" step="0.1" id="clap-peso" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="clap-presion">Presión Arterial:</label>
+                    <input type="text" id="clap-presion" placeholder="120/80" required>
+                </div>
+                
+                <button type="submit">Guardar Registro</button>
+            </form>
+            
+            <div class="table-container">
+                <table id="tabla-clap">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Peso</th>
+                            <th>Presión</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los registros se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- VIDEOS EDUCATIVOS -->
+        <section id="videos" class="tab-content">
+            <h2>🎬 Educación en Diabetes</h2>
+            <div class="video-container">
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/ejemplo1" allowfullscreen></iframe>
+                    <div class="video-info">
+                        <h3>¿Qué es la diabetes gestacional?</h3>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <iframe src="https://www.youtube.com/embed/ejemplo2" allowfullscreen></iframe>
+                    <div class="video-info">
+                        <h3>Alimentación saludable</h3>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CONTACTO -->
+        <section id="contacto" class="tab-content">
+            <h2>👩‍⚕️ Equipo Médico</h2>
+            <div class="contact-card">
+                <div class="contact-item">
+                    <h4>Obstetra/Ginecólogo</h4>
+                    <p>Horario: Lunes a Viernes, 8am - 4pm</p>
+                </div>
+                
+                <div class="contact-item">
+                    <h4>Nutricionista</h4>
+                    <p>Horario: Martes y Jueves, 9am - 2pm</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- MENÚ INFERIOR -->
+    <div class="mobile-menu">
+        <a href="#" class="menu-btn" onclick="mostrarSeccion('cronograma')">
+            <span>📅</span>
+            <span>Cronograma</span>
+        </a>
+        
+        <a href="#" class="menu-btn" onclick="mostrarSeccion('glucometria')">
+            <span>🩸</span>
+            <span>Glucosa</span>
+        </a>
+        
+        <a href="#" class="menu-btn" onclick="mostrarSeccion('clap')">
+            <span>📋</span>
+            <span>CLAP</span>
+        </a>
+        
+        <a href="#" class="menu-btn" onclick="mostrarSeccion('videos')">
+            <span>🎬</span>
+            <span>Videos</span>
+        </a>
+    </div>
+
+    <script>
+        // FUNCIONES PRINCIPALES
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarDatos();
+            
+            // Configurar formularios
+            document.getElementById('form-calendario').addEventListener('submit', guardarEvento);
+            document.getElementById('form-glucometria').addEventListener('submit', guardarGlucosa);
+            document.getElementById('form-clap').addEventListener('submit', guardarClap);
+        });
+        
+        // MOSTRAR SECCIONES
+        function mostrarSeccion(seccionId) {
+            // Oculta todas las secciones
+            document.querySelectorAll('.tab-content').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Muestra la sección seleccionada
+            document.getElementById(seccionId).classList.add('active');
+        }
+        
+        // GUARDAR DATOS EN LOCALSTORAGE
+        function guardarEvento(e) {
+            e.preventDefault();
+            const eventos = JSON.parse(localStorage.getItem('eventos')) || [];
+            
+            const nuevoEvento = {
+                id: Date.now(),
+                titulo: document.getElementById('evento-titulo').value,
+                fecha: document.getElementById('evento-fecha').value
+            };
+            
+            eventos.push(nuevoEvento);
+            localStorage.setItem('eventos', JSON.stringify(eventos));
+            
+            alert('Evento agregado al cronograma');
+            document.getElementById('form-calendario').reset();
+            cargarDatos();
+        }
+        
+        function cargarDatos() {
+            // Cargar eventos
+            const eventos = JSON.parse(localStorage.getItem('eventos')) || [];
+            const tablaEventos = document.getElementById('tabla-eventos').querySelector('tbody');
+            tablaEventos.innerHTML = '';
+            
+            eventos.forEach(evento => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${evento.fecha}</td>
+                    <td>${evento.titulo}</td>
+                    <td><button onclick="eliminarRegistro('eventos', ${evento.id})">❌</button></td>
+                `;
+                tablaEventos.appendChild(fila);
+            });
+            
+            // Cargar glucometrías (similar a eventos)
+            // Cargar CLAP (similar a eventos)
+        }
+        
+        function eliminarRegistro(tipo, id) {
+            if (confirm('¿Eliminar este registro?')) {
+                const datos = JSON.parse(localStorage.getItem(tipo)).filter(item => item.id !== id);
+                localStorage.setItem(tipo, JSON.stringify(datos));
+                cargarDatos();
+            }
+        }
+    </script>
+</body>
+</html>
